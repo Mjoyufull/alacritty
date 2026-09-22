@@ -228,7 +228,7 @@ impl GraphicData {
     /// not filled.
     pub fn is_filled(&self, x: usize, y: usize, width: usize, height: usize) -> bool {
         //  A region that ends exactly on the last pixel is inside the picture
-        if x + width > self.width || y + height >= self.height {
+        if x + width > self.width || y + height > self.height {
             return false;
         }
 
@@ -241,7 +241,7 @@ impl GraphicData {
         debug_assert!(self.color_type == ColorType::Rgba);
 
         for offset_y in y..y + height {
-            let start = (offset_y * self.width) * 4;
+            let start = (offset_y * self.width + x) * 4;
             let row = &self.pixels[start..start + width * 4];
 
             if row.chunks_exact(4).any(|pixel| pixel.last() != Some(&255)) {
