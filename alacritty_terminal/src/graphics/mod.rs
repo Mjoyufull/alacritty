@@ -663,3 +663,24 @@ fn check_opaque_region() {
     assert!(graphic.is_filled(0, 0, 3, 3));
     assert!(!graphic.is_filled(1, 1, 4, 4));
 }
+
+#[test]
+fn opaque_region_is_detected_away_from_the_origin() {
+    let mut pixels = vec![255; 10 * 10 * 4];
+    for y in 0..10 {
+        pixels[y * 10 * 4 + 3] = 0; // alpha of pixel (0, y)
+    }
+
+    let graphic = GraphicData {
+        id: GraphicId(0),
+        width: 10,
+        height: 10,
+        color_type: ColorType::Rgba,
+        pixels,
+        is_opaque: false,
+    };
+
+    assert!(!graphic.is_filled(0, 0, 4, 4));
+    assert!(graphic.is_filled(4, 0, 4, 4));
+    assert!(graphic.is_filled(5, 5, 5, 5));
+}
